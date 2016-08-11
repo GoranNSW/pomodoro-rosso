@@ -8,8 +8,6 @@ import controller.User;
 public class App {
 
 	public static void main(String[] args) {
-		
-			System.out.println("Test");
 			
 			Team team = new Team("firstTeam");
 			User user = new User("email@email.com", "Goran");
@@ -21,6 +19,8 @@ public class App {
 			
 			TimeObserver timeObserver = new TimeObserver(timeGrabber);
 			
+			timeGrabber.setTeamTimes(team);
+			user2.setPomodoroTime(10);
 			timeGrabber.setTeamTimes(team);
 	}
 
