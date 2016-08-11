@@ -34,6 +34,7 @@ public class TimeGrabber implements Subject {
 	public void setTeamTimes(Team team) {
 		this.team = team;
 		for (User user : team.getUsers()) {
+			//TODO - Refresh times and put them to the database, and show them to the other team members
 			System.out.println(user.getName() + " has " + (user.getPomodoroTime() / (60*1000)) + " minutes left in his pomodoro.");
 		}
 		notifyObserver();
