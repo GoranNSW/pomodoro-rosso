@@ -1,9 +1,9 @@
 package rs.goran;
 
-import controller.Team;
-import controller.TimeGrabber;
-import controller.TimeObserver;
-import controller.User;
+import model.Team;
+import model.TimeGrabber;
+import model.TimeObserver;
+import model.User;
 
 public class App {
 
