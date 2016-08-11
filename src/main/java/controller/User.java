@@ -21,6 +21,7 @@ public class User {
 		this.name = name;
 		this.pomodoroTime = POMODORO_TIME;
 		this.pomodoroCount = 0;
+		this.pomodoroPause = false;
 		this.breakTime = 0;
 	}
 	

@@ -34,7 +34,7 @@ public class TimeGrabber implements Subject {
 	public void setTeamTimes(Team team) {
 		this.team = team;
 		for (User user : team.getUsers()) {
-			System.out.println(user.getPomodoroTime());
+			System.out.println(user.getName() + " has " + user.getPomodoroTime() + "ms left in his pomodoro.");
 		}
 		notifyObserver();
 	}

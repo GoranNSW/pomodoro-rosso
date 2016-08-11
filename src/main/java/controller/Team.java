@@ -1,16 +1,17 @@
 package controller;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Team {
 	
 	private String name;
-	private List<User> users;
+	private ArrayList<User> users;
 	
 	
 	public Team(String name) {
 		super();
 		this.name = name;
+		this.users = new ArrayList<User>();
 	}
 
 	public String getName() {
@@ -21,12 +22,17 @@ public class Team {
 		this.name = name;
 	}
 	
-	public List<User> getUsers() {
+	public ArrayList<User> getUsers() {
 		return users;
 	}
 	
 	public void addUser(User user) {
-		this.users.add(user);
+		try {
+			this.users.add(user);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean deleteUser(String email) {
