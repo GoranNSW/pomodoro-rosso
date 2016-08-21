@@ -1,4 +1,4 @@
-package model;
+package rs.goran.model;
 
 public interface Subject {
 

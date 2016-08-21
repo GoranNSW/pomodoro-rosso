@@ -1,0 +1,11 @@
+# Eclipse
+.project
+.classpath
+.settings
+.checkstyle
+.cproject
+
+# Maven
+target
+release.properties
+pom.xml.*
