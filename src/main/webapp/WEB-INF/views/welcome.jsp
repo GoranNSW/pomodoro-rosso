@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Login page</title>
+<title>Yahoo!!</title>
 </head>
 <body>
 Welcome ${name} and Password is ${password}
