@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Yahoo!</title>
+<title>User login</title>
 </head>
 <body>
     <p><font color="red">${errorMessage}</font></p>
