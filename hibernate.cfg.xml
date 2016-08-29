@@ -7,7 +7,7 @@
     <session-factory>
 
         <!-- JDBC Database connection settings -->
-        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="connection.url">jdbc:mysql://localhost:3306/pomodoro_rosso?useSSL=false</property>
         <property name="connection.username">hbstudent</property>
         <property name="connection.password">hbstudent</property>
@@ -23,11 +23,13 @@
 
 		<!-- Set the current session context -->
 		<property name="current_session_context_class">thread</property>
-		
+
+				
 		<mapping class="rs.goran.model.User"/>
 		<mapping class="rs.goran.model.Pomodoro"/>
 		<mapping class="rs.goran.model.Team"/>
-		
+		<mapping class="rs.goran.model.UserDetails"/>
+		<mapping class="rs.goran.model.Vehicle"/>
  
     </session-factory>
 

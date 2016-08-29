@@ -1,72 +1,179 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>rs.goran</groupId>
-	<artifactId>pomodoro-rosso</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<dependencies>
-		<dependency>
-			<groupId>com.google.oauth-client</groupId>
-			<artifactId>google-oauth-client</artifactId>
-			<version>1.22.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-utils</artifactId>
-			<version>3.0.24</version>
-		</dependency>
-		<dependency>
+	<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	  <modelVersion>4.0.0</modelVersion>	  
+	  <groupId>rs.goran.service</groupId>
+	  <artifactId>webapp</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <name>WebApp</name>
+	  <description></description>	  
+	  <repositories>
+	    <repository>
+	      <id>springsource-repo</id>
+	      <name>SpringSource Repository</name>
+	      <url>http://repo.springsource.org/release</url>
+	    </repository>
+	  </repositories>	  
+	  <properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <jetty.version>8.1.5.v20120716</jetty.version>
+	    <jetty.jsp.version>8.1.4.v20120524</jetty.jsp.version>
+	    <spring.version>3.1.2.RELEASE</spring.version>
+	     <java.version>1.8</java.version>
+	  </properties>	  	
+	  <build>
+	    <plugins>
+	      <plugin>
+	      	<groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-source-plugin</artifactId>
+	        <version>2.1.2</version>
+	        <executions>
+	          <execution>
+	            <id>attach-sources</id>
+	            <phase>verify</phase>
+	            <goals>
+	              <goal>jar-no-fork</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	      </plugin>
+	      <plugin>
+		     <artifactId>maven-compiler-plugin</artifactId>
+		     <version>2.3.2</version>
+		     <configuration>
+		       <source>${java.version}</source>
+		       <target>${java.version}</target>
+		     </configuration>
+		  </plugin>
+	      <plugin> 
+	        <artifactId>maven-eclipse-plugin</artifactId>
+	        <version>2.9</version>
+	        <configuration> 
+	          <downloadSources>true</downloadSources>
+	        </configuration> 
+	      </plugin>
+	      <plugin>
+	        <groupId>org.codehaus.mojo</groupId>
+	        <artifactId>build-helper-maven-plugin</artifactId>
+	        <version>1.5</version>
+	        <executions>
+	          <execution>
+	            <id>add-resource</id>
+	            <phase>generate-resources</phase>
+	            <goals>
+	              <goal>add-resource</goal>
+	            </goals>
+	            <configuration>
+	              <resources>
+	                <resource>
+	                  <directory>src/main/java/META-INF/webapp</directory>
+	                  <targetPath>META-INF/webapp</targetPath>
+	                </resource>
+	              </resources>       
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-shade-plugin</artifactId>
+	        <version>2.0</version>
+	        <executions>
+	          <execution>
+	            <goals>
+	              <goal>shade</goal>
+	            </goals>
+	            <configuration>
+	              <filters>
+	                <filter>
+	                  <artifact>*:*</artifact>
+	                  <excludes>
+	                    <exclude>**/*.DSA</exclude>
+	                    <exclude>**/*.RSA</exclude>
+	                    <exclude>**/*.SF</exclude>
+	                  </excludes>
+	                </filter>
+	              </filters>
+	              <transformers>
+	                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+	                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+	                  <mainClass>com.sjl.Main</mainClass>
+	                </transformer>
+	                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                  <resource>META-INF/spring.handlers</resource>
+	                </transformer>
+	                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                  <resource>META-INF/spring.schemas</resource>
+	                </transformer>
+	              </transformers>
+	            </configuration>
+	          </execution>
+	        </executions>
+	      </plugin> 
+	    </plugins> 
+	  </build>	    
+	  <dependencies>	  
+	 	 <!-- GOOGLE LOGIN DEPENDENCY -->
+	    <!-- SPRING DEPENDENCIES -->
+	    <dependency>
+	      <groupId>org.springframework</groupId>
+	      <artifactId>spring-context</artifactId>
+	      <version>${spring.version}</version>
+	    </dependency> 
+	    <dependency>
+	      <groupId>org.springframework</groupId>
+	      <artifactId>spring-webmvc</artifactId>
+	      <version>${spring.version}</version>
+	    </dependency>	    
+	    <!-- JETTY DEPENDENCIES -->
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-server</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-servlet</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-webapp</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-servlets</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>	
+	    <!-- JSP and JSTL SUPPORT -->
+	    <dependency>
+		  <groupId>org.eclipse.jetty</groupId>
+		  <artifactId>jetty-jsp</artifactId>
+		  <version>${jetty.jsp.version}</version>
+		</dependency>    
+	    <dependency>
+	      <groupId>javax.servlet</groupId>
+	      <artifactId>jstl</artifactId>
+	      <version>1.2</version>
+	      <scope>provided</scope>
+	    </dependency>
+	    <!-- HIBERNATE SUPPORT -->
+	    <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>5.2.1.Final</version>
 		</dependency>
+	    <!-- SQL SUPPORT -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>6.0.3</version>
 		</dependency>
+		<!-- GOOGLE OAUTH2.0-->
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<version>6.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>4.3.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-	</dependencies>
-		<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.2</version>
-					<configuration>
-						<verbose>true</verbose>
-						<source>1.8</source>
-						<target>1.8</target>
-						<showWarnings>true</showWarnings>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
-					<version>2.2</version>
-					<configuration>
-						<path>/</path>
-						<contextReloadable>true</contextReloadable>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-		<packaging>war</packaging>
-</project>
+		    <groupId>com.google.identitytoolkit</groupId>
+		    <artifactId>gitkitclient</artifactId>
+		    <version>1.2.7</version>
+		</dependency>		
+	  </dependencies>	
+	</project>
+	

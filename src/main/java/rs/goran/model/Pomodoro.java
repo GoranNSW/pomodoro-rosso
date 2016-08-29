@@ -1,19 +1,26 @@
+
 package rs.goran.model;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+
 @Table(name = "pomodoro")
 public class Pomodoro {
 
     @Id
-    @Column
-    private String user;
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "task_name")
     private String taskName;
@@ -25,7 +32,13 @@ public class Pomodoro {
     private long dateTimePaused;
 
     @Column(name = "finished")
-    private boolean finished;
+    private int finished;
+
+    @Column(name = "user")
+    private String user;
+
+    @Column(name = "team")
+    private String team;
 
     public Pomodoro(String taskName) {
         this.taskName = taskName;
@@ -60,11 +73,17 @@ public class Pomodoro {
     }
 
     public boolean isFinished() {
-        return finished;
+        if (this.finished == 1)
+            return true;
+        else
+            return false;
     }
 
     public void setFinished(boolean finished) {
-        this.finished = finished;
+        if (finished)
+            this.finished = 1;
+        else
+            this.finished = 0;
     }
 
 }

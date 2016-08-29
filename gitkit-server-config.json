@@ -1,0 +1,8 @@
+{
+  "clientId": "6244935162-09a50pi2he4tj6afs6gg0faum8jilp2k.apps.googleusercontent.com",
+  "projectId": "pomodoro-rosso",
+  "serviceAccountEmail": "",
+  "serviceAccountPrivateKeyFile": "d:/java//pomodoro-rosso-dd173b77adda.p12",
+  "widgetUrl": "http://localhost:8000/gitkit",
+  "cookieName": "gtoken"
+}
