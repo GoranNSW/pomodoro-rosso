@@ -11,12 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import rs.goran.service.HibernateUtil;
 
 @Entity
 public class Team {
+
+    final static Logger logger = Logger.getLogger(Team.class);
 
     @Id
     private String name;
@@ -68,10 +71,10 @@ public class Team {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("User " + user.getName() + " added.");
+            logger.info("User " + user.getName() + " added.");
             return true;
         } else {
-            System.out.println("User " + user.getName() + " already exists in database.");
+            logger.warn("User " + user.getName() + " already exists in database.");
             return false;
         }
     }
@@ -84,10 +87,10 @@ public class Team {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("User " + user.getName() + " deleted.");
+            logger.info("User " + user.getName() + " deleted.");
             return true;
         } else {
-            System.out.println("User " + user.getName() + " does not exist.");
+            logger.warn("User " + user.getName() + " does not exist.");
             return false;
         }
     }

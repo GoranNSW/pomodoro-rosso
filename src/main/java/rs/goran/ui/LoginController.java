@@ -8,8 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +25,7 @@ import com.google.identitytoolkit.GitkitUser;
 @SessionAttributes({ "email" })
 public class LoginController {
 
-    @Autowired
-    LoginService service;
+    final static Logger logger = Logger.getLogger(LoginController.class);
 
     private String username;
     private String email;
@@ -52,7 +51,7 @@ public class LoginController {
                         + gitkitUser.getLocalId() + "<br> Provider: " + gitkitUser.getCurrentProvider();
                 email = gitkitUser.getEmail();
                 model.addAttribute("email", email);
-                System.out.println("Gitkit " + userInfo);
+                logger.info("Gitkit " + userInfo);
                 return "loggedin";
             }
 
@@ -91,14 +90,14 @@ public class LoginController {
     public String showLoggedIn(ModelMap model) {
         model.addAttribute("username", this.username);
         model.addAttribute("email", this.email);
-        System.out.println(email);
+        logger.info(email);
         return "loggedin";
     }
 
     @RequestMapping(value = "/loggedin", method = RequestMethod.POST)
     public String handleUsernameInput(@RequestParam("username") String username, ModelMap model) {
         this.username = username;
-        System.out.println("POST " + username + " " + "Email: " + email);
+        logger.info("POST " + username + " " + "Email: " + email);
         return "redirect:/loggedin";
     }
 

@@ -5,8 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.apache.log4j.Logger;
+
 @Entity
 public class Pomodoro {
+
+    final static Logger logger = Logger.getLogger(Pomodoro.class);
 
     @Id
     private String taskName;
@@ -83,10 +87,5 @@ public class Pomodoro {
     public void setTeam(Team team) {
         this.team = team;
     }
-
-    // public void startPomodoro() {
-    // Date date = new Date();
-    // this.dateTimeStarted = date.getTime();
-    // System.out.println("Pomodoro started at " + date.getTime());
 
 }

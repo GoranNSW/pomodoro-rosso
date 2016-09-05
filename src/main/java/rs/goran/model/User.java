@@ -11,12 +11,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import rs.goran.service.HibernateUtil;
 
 @Entity
 public class User {
+
+    final static Logger logger = Logger.getLogger(User.class);
 
     @Id
     private String email;
@@ -79,10 +82,10 @@ public class User {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("Team " + team.getName() + " added.");
+            logger.info("Team " + team.getName() + " added.");
             return true;
         } else {
-            System.out.println("Team " + team.getName() + " already exists in database.");
+            logger.warn("Team " + team.getName() + " already exists in database.");
             return false;
         }
     }
@@ -95,10 +98,10 @@ public class User {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("Team " + team.getName() + " deleted.");
+            logger.info("Team " + team.getName() + " deleted.");
             return true;
         } else {
-            System.out.println("Team " + team.getName() + " does not exist.");
+            logger.warn("Team " + team.getName() + " does not exist.");
             return false;
         }
     }
@@ -112,10 +115,10 @@ public class User {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("Pomodoro " + pomodoro.getTaskName() + " added.");
+            logger.info("Pomodoro " + pomodoro.getTaskName() + " added.");
             return true;
         } else {
-            System.out.println("Pomodoro " + pomodoro.getTaskName() + " already exists in database.");
+            logger.warn("Pomodoro " + pomodoro.getTaskName() + " already exists in database.");
             return false;
         }
     }
@@ -128,10 +131,10 @@ public class User {
             session.saveOrUpdate(this);
             session.getTransaction().commit();
             session.close();
-            System.out.println("Pomodoro " + pomodoro.getTaskName() + " deleted.");
+            logger.info("Pomodoro " + pomodoro.getTaskName() + " deleted.");
             return true;
         } else {
-            System.out.println("Pomodoro " + pomodoro.getTaskName() + " does not exist.");
+            logger.warn("Pomodoro " + pomodoro.getTaskName() + " does not exist.");
             return false;
         }
     }
