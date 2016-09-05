@@ -1,47 +1,39 @@
 
 package rs.goran.model;
 
-import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.ManyToOne;
 
 @Entity
-
-@Table(name = "pomodoro")
 public class Pomodoro {
 
     @Id
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "task_name")
     private String taskName;
 
-    @Column(name = "date_time_started")
     private long dateTimeStarted;
 
-    @Column(name = "date_time_paused")
     private long dateTimePaused;
 
-    @Column(name = "finished")
-    private int finished;
+    private boolean finished;
 
-    @Column(name = "user")
-    private String user;
+    @ManyToOne
+    private Team team;
 
-    @Column(name = "team")
-    private String team;
+    @ManyToOne
+    private User user;
 
-    public Pomodoro(String taskName) {
+    public Pomodoro() {
+
+    }
+
+    public Pomodoro(String taskName, long dateTimeStarted, long dateTimePaused, boolean finished, Team team) {
+        super();
         this.taskName = taskName;
+        this.dateTimeStarted = dateTimeStarted;
+        this.dateTimePaused = dateTimePaused;
+        this.finished = finished;
+        this.team = team;
     }
 
     public String getTaskName() {
@@ -56,34 +48,45 @@ public class Pomodoro {
         return dateTimeStarted;
     }
 
-    public void startPomodoro() {
-        Date date = new Date();
-        this.dateTimeStarted = date.getTime();
-        System.out.println("Pomodoro started at " + date.getTime());
+    public void setDateTimeStarted(long dateTimeStarted) {
+        this.dateTimeStarted = dateTimeStarted;
     }
 
     public long getDateTimePaused() {
         return dateTimePaused;
     }
 
-    public void pausePomodoro() {
-        Date date = new Date();
-        this.dateTimePaused = date.getTime();
-        System.out.println("Pomodoro paused at " + date.getTime());
+    public void setDateTimePaused(long dateTimePaused) {
+        this.dateTimePaused = dateTimePaused;
     }
 
-    public boolean isFinished() {
-        if (this.finished == 1)
-            return true;
-        else
-            return false;
+    public boolean getFinished() {
+        return finished;
     }
 
     public void setFinished(boolean finished) {
-        if (finished)
-            this.finished = 1;
-        else
-            this.finished = 0;
+        this.finished = finished;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    // public void startPomodoro() {
+    // Date date = new Date();
+    // this.dateTimeStarted = date.getTime();
+    // System.out.println("Pomodoro started at " + date.getTime());
 
 }

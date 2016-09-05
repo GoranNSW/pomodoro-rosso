@@ -72,58 +72,58 @@ public class WebServer {
     private ThreadPool createThreadPool() {
         // TODO: You should configure these appropriately
         // for your environment - this is an example only
-        QueuedThreadPool _threadPool = new QueuedThreadPool();
-        _threadPool.setMinThreads(10);
-        _threadPool.setMaxThreads(100);
-        return _threadPool;
+        QueuedThreadPool threadPool = new QueuedThreadPool();
+        threadPool.setMinThreads(10);
+        threadPool.setMaxThreads(100);
+        return threadPool;
     }
 
     private SelectChannelConnector createConnector() {
-        SelectChannelConnector _connector = new SelectChannelConnector();
-        _connector.setPort(port);
-        _connector.setHost(bindInterface);
-        return _connector;
+        SelectChannelConnector connector = new SelectChannelConnector();
+        connector.setPort(port);
+        connector.setHost(bindInterface);
+        return connector;
     }
 
     private HandlerCollection createHandlers() {
-        WebAppContext _ctx = new WebAppContext();
-        _ctx.setContextPath("/");
+        WebAppContext ctx = new WebAppContext();
+        ctx.setContextPath("/");
 
         if (isRunningInShadedJar()) {
-            _ctx.setWar(getShadedWarUrl());
+            ctx.setWar(getShadedWarUrl());
         } else {
-            _ctx.setWar(PROJECT_RELATIVE_PATH_TO_WEBAPP);
+            ctx.setWar(PROJECT_RELATIVE_PATH_TO_WEBAPP);
         }
 
-        List<Handler> _handlers = new ArrayList<Handler>();
+        List<Handler> handlers = new ArrayList<Handler>();
 
-        _handlers.add(_ctx);
+        handlers.add(ctx);
 
-        HandlerList _contexts = new HandlerList();
-        _contexts.setHandlers(_handlers.toArray(new Handler[0]));
+        HandlerList contexts = new HandlerList();
+        contexts.setHandlers(handlers.toArray(new Handler[0]));
 
-        RequestLogHandler _log = new RequestLogHandler();
-        _log.setRequestLog(createRequestLog());
+        RequestLogHandler log = new RequestLogHandler();
+        log.setRequestLog(createRequestLog());
 
-        HandlerCollection _result = new HandlerCollection();
-        _result.setHandlers(new Handler[] { _contexts, _log });
+        HandlerCollection result = new HandlerCollection();
+        result.setHandlers(new Handler[] { contexts, log });
 
-        return _result;
+        return result;
     }
 
     private RequestLog createRequestLog() {
-        NCSARequestLog _log = new NCSARequestLog();
+        NCSARequestLog log = new NCSARequestLog();
 
-        File _logPath = new File(LOG_PATH);
-        _logPath.getParentFile().mkdirs();
+        File logPath = new File(LOG_PATH);
+        logPath.getParentFile().mkdirs();
 
-        _log.setFilename(_logPath.getPath());
-        _log.setRetainDays(90);
-        _log.setExtended(false);
-        _log.setAppend(true);
-        _log.setLogTimeZone("GMT");
-        _log.setLogLatency(true);
-        return _log;
+        log.setFilename(logPath.getPath());
+        log.setRetainDays(90);
+        log.setExtended(false);
+        log.setAppend(true);
+        log.setLogTimeZone("GMT");
+        log.setLogLatency(true);
+        return log;
     }
 
     // ---------------------------
@@ -144,8 +144,8 @@ public class WebServer {
     }
 
     private String getShadedWarUrl() {
-        String _urlStr = getResource(WEB_XML).toString();
+        String urlStr = getResource(WEB_XML).toString();
         // Strip off "WEB-INF/web.xml"
-        return _urlStr.substring(0, _urlStr.length() - 15);
+        return urlStr.substring(0, urlStr.length() - 15);
     }
 }

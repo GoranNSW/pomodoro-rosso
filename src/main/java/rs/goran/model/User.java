@@ -1,41 +1,34 @@
 
 package rs.goran.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
+
+import org.hibernate.Session;
+
+import rs.goran.service.HibernateUtil;
 
 @Entity
-@Table(name = "user")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
     private String name;
 
-    @OneToMany
-    @JoinTable(name = "pomodoro")
-    private Collection<Pomodoro> pomodoroList = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_pomodoro")
+    private Set<Pomodoro> pomodoroList = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "team_members")
-    private Collection<Team> teamList = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "userList")
+    private Set<Team> teamList = new HashSet<>();
 
     public User() {
 
@@ -44,14 +37,6 @@ public class User {
     public User(String email, String name) {
         this.email = email;
         this.name = name;
-    }
-
-    public int getUserId() {
-        return id;
-    }
-
-    public void setUserId(int userId) {
-        this.id = userId;
     }
 
     public String getEmail() {
@@ -70,60 +55,85 @@ public class User {
         this.name = name;
     }
 
-    public Collection<Pomodoro> getPomodoros() {
+    public Set<Pomodoro> getPomodoroList() {
         return pomodoroList;
     }
 
-    public void setPomodoros(Collection<Pomodoro> pomodoros) {
-        this.pomodoroList = pomodoros;
+    public void setPomodoroList(Set<Pomodoro> pomodoroList) {
+        this.pomodoroList = pomodoroList;
     }
 
-    public Collection<Team> getTeams() {
+    public Set<Team> getTeamList() {
         return teamList;
     }
 
-    public void setTeams(Collection<Team> teams) {
-        this.teamList = teams;
+    public void setTeamList(Set<Team> teamList) {
+        this.teamList = teamList;
     }
 
-    // public void addPomodoro(String taskName) {
-    // // TODO check duplicate name from DB
-    //
-    // try {
-    // Pomodoro pomodoro = new Pomodoro(taskName);
-    // this.pomodoroList.add(pomodoro);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
+    public boolean addTeam(Team team) {
+        if (!this.getTeamList().contains(team)) {
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+            this.getTeamList().add(team);
+            session.saveOrUpdate(this);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println("Team " + team.getName() + " added.");
+            return true;
+        } else {
+            System.out.println("Team " + team.getName() + " already exists in database.");
+            return false;
+        }
+    }
 
-    // public List<Pomodoro> getPomodoros() {
-    // return pomodoros;
-    // }
-    //
-    // public List<Team> getTeams() {
-    // return teams;
-    // }
-    //
-    // public void addTeam(String teamName) {
-    // try {
-    // Team team = new Team(teamName);
-    // this.teams.add(team);
-    // } catch (Exception e)
-    //
-    // {
-    // e.printStackTrace();
-    // }
-    // }
-    //
-    // public boolean deleteTeam(String teamName) {
-    // boolean isFound = false;
-    // for (Team team : this.teams) {
-    // if (team.getName().equals(teamName)) {
-    // isFound = this.teams.remove(team);
-    // }
-    // }
-    // return isFound; // TODO - if found show success, otherwise show not found
-    // }
+    public boolean removeTeam(Team team) {
+        if (this.getTeamList().contains(team)) {
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+            this.getTeamList().remove(team);
+            session.saveOrUpdate(this);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println("Team " + team.getName() + " deleted.");
+            return true;
+        } else {
+            System.out.println("Team " + team.getName() + " does not exist.");
+            return false;
+        }
+    }
+
+    public boolean addPomodoro(Pomodoro pomodoro) {
+        if (!this.getPomodoroList().contains(pomodoro)) {
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+            this.getPomodoroList().add(pomodoro);
+            pomodoro.setUser(this);
+            session.saveOrUpdate(this);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println("Pomodoro " + pomodoro.getTaskName() + " added.");
+            return true;
+        } else {
+            System.out.println("Pomodoro " + pomodoro.getTaskName() + " already exists in database.");
+            return false;
+        }
+    }
+
+    public boolean removePomodoro(Pomodoro pomodoro) {
+        if (this.getPomodoroList().contains(pomodoro)) {
+            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+            session.beginTransaction();
+            this.getPomodoroList().remove(pomodoro);
+            session.saveOrUpdate(this);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println("Pomodoro " + pomodoro.getTaskName() + " deleted.");
+            return true;
+        } else {
+            System.out.println("Pomodoro " + pomodoro.getTaskName() + " does not exist.");
+            return false;
+        }
+    }
 
 }

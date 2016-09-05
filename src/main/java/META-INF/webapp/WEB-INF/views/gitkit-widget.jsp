@@ -7,7 +7,7 @@
 function load() {
   var config = {
   "widgetUrl": "http://localhost:8000/gitkit",
-  "signInSuccessUrl": "/",
+  "signInSuccessUrl": "/loggedin",
   "signOutUrl": "/",
   "oobActionUrl": "/",
   "apiKey": "AIzaSyB3ry4tDLxM3UrRU4zDaX5pZBQn7lbwgPM",

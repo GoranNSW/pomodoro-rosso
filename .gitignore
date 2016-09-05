@@ -13,4 +13,5 @@ pom.xml.*
 # Settings and security files
 *.p12
 gitkit-server-config.json
+maven-eclipse.xml
 *.launch

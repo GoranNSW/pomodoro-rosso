@@ -8,4 +8,8 @@ public class LoginService {
         return user.equalsIgnoreCase("goran") && password.equals("admin");
     }
 
+    public boolean validateUsername() {
+        return false;
+    }
+
 }

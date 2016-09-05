@@ -1,6 +1,7 @@
 package rs.goran;
 
-import rs.goran.jdbc.TestJdbc;
+import org.quartz.SchedulerException;
+
 import rs.goran.service.WebServer;
 
 public class Main {
@@ -16,9 +17,7 @@ public class Main {
         server.join();
     }
 
-    public static void main(String[] args) {
-
-        // Start web service
+    public static void main(String[] args) throws SchedulerException {
 
         try {
             new Main().start();
@@ -26,33 +25,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        // User user = new User("email@email.com", "Goran");
-        // Team team = new Team("firstTeam", user.getUserId());
-        //
-        // user.getTeams().add(team);
-        // User user2 = new User("asd@asd.com", "Nobody");
-        //
-        // TimeGrabber timeGrabber = new TimeGrabber(user);
-        //
-        // TimeObserver timeObserver = new TimeObserver(timeGrabber);
-
-        // timeGrabber.setTeamTimes(team);
-        // user2.setPomodoroTime(10);
-        // team.deleteUser("email@email.com");
-        // timeGrabber.setTeamTimes(team);
-
-        TestJdbc testJdbc = new TestJdbc();
-        testJdbc.test();
-
-        // TestHibernate testHibernate = new TestHibernate();
-        // testHibernate.testFactory();
-
-        // TestHibernatePomodoro testHibernatePomodoro = new
-        // TestHibernatePomodoro();
-        // testHibernatePomodoro.testFactory();
-
         System.out.println("End.");
 
     }
-
 }
