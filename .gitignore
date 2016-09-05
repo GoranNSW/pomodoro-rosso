@@ -14,4 +14,4 @@ pom.xml.*
 *.p12
 gitkit-server-config.json
 maven-eclipse.xml
-*.launch
+*.log
