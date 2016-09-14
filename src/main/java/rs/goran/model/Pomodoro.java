@@ -1,7 +1,11 @@
 
 package rs.goran.model;
 
+import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -15,28 +19,25 @@ public class Pomodoro {
     @Id
     private String taskName;
 
-    private long dateTimeStarted;
+    private Date dateTimeStarted;
 
-    private long dateTimePaused;
+    private Date dateTimePaused;
 
     private boolean finished;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User user;
 
     public Pomodoro() {
 
     }
 
-    public Pomodoro(String taskName, long dateTimeStarted, long dateTimePaused, boolean finished, Team team) {
+    public Pomodoro(String taskName, Team team) {
         super();
         this.taskName = taskName;
-        this.dateTimeStarted = dateTimeStarted;
-        this.dateTimePaused = dateTimePaused;
-        this.finished = finished;
         this.team = team;
     }
 
@@ -48,27 +49,27 @@ public class Pomodoro {
         this.taskName = taskName;
     }
 
-    public long getDateTimeStarted() {
+    public Date getDateTimeStarted() {
         return dateTimeStarted;
     }
 
-    public void setDateTimeStarted(long dateTimeStarted) {
+    public void setDateTimeStarted(Date dateTimeStarted) {
         this.dateTimeStarted = dateTimeStarted;
     }
 
-    public long getDateTimePaused() {
+    public Date getDateTimePaused() {
         return dateTimePaused;
     }
 
-    public void setDateTimePaused(long dateTimePaused) {
+    public void setDateTimePaused(Date dateTimePaused) {
         this.dateTimePaused = dateTimePaused;
     }
 
-    public boolean getFinished() {
+    public boolean getIsFinished() {
         return finished;
     }
 
-    public void setFinished(boolean finished) {
+    public void setIsFinished(boolean finished) {
         this.finished = finished;
     }
 

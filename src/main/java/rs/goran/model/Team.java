@@ -6,15 +6,13 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-
-import rs.goran.service.HibernateUtil;
 
 @Entity
 public class Team {
@@ -24,7 +22,7 @@ public class Team {
     @Id
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "team_name"), inverseJoinColumns = @JoinColumn(name = "user_email"))
     private Set<User> userList = new HashSet<>();
 
@@ -63,14 +61,9 @@ public class Team {
         this.creator = creator;
     }
 
-    public boolean addUser(User user) {
+    protected boolean addUser(User user) {
         if (!this.getUserList().contains(user)) {
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
             this.getUserList().add(user);
-            session.saveOrUpdate(this);
-            session.getTransaction().commit();
-            session.close();
             logger.info("User " + user.getName() + " added.");
             return true;
         } else {
@@ -79,14 +72,9 @@ public class Team {
         }
     }
 
-    public boolean removeUser(User user) {
+    protected boolean removeUser(User user) {
         if (this.getUserList().contains(user)) {
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
             this.getUserList().remove(user);
-            session.saveOrUpdate(this);
-            session.getTransaction().commit();
-            session.close();
             logger.info("User " + user.getName() + " deleted.");
             return true;
         } else {

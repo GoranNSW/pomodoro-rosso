@@ -21,6 +21,7 @@
 		<jetty.jsp.version>8.1.4.v20120524</jetty.jsp.version>
 		<spring.version>3.1.2.RELEASE</spring.version>
 		<java.version>1.8</java.version>
+		<logf4j.version>1.7.12</logf4j.version>
 	</properties>
 	<build>
 		<plugins>
@@ -120,10 +121,15 @@
 	<dependencies>
 		<!-- LOG4J DEPENDENCY -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${logf4j.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${logf4j.version}</version>
+		</dependency>	
 		<!-- SPRING DEPENDENCIES -->
 		<dependency>
 			<groupId>org.springframework</groupId>
