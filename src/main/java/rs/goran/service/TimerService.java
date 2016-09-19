@@ -15,21 +15,22 @@ import rs.goran.model.User;
 
 public class TimerService {
 
-    public boolean startTimerService(Pomodoro pomodoro, long timeDifference) {
+    Scheduler scheduler;
+
+    public boolean startPomodoroCounter(Pomodoro pomodoro, long time) {
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             JobKey jobKey = new JobKey(pomodoro.getTaskName(), pomodoro.getUser().getEmail());
             if (!scheduler.checkExists(jobKey)) {
-                JobDetail job = JobBuilder.newJob(PomodoroTimeCounter.class)
+                JobDetail job = JobBuilder.newJob(TimeCounterPomodoro.class)
                         .withIdentity(pomodoro.getTaskName(), pomodoro.getUser().getEmail()).build();
                 Trigger trigger = TriggerBuilder.newTrigger()
                         .withIdentity(pomodoro.getTaskName(), pomodoro.getUser().getEmail())
                         .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(User.UPDATE_INTERVAL)
                                 .repeatForever().withMisfireHandlingInstructionNextWithExistingCount())
                         .build();
-                job.getJobDataMap().put(PomodoroTimeCounter.TIME, User.POMODORO_TIME - timeDifference);
-                job.getJobDataMap().put(PomodoroTimeCounter.POMODORO, pomodoro);
-                job.getJobDataMap().put("pause_job", false);
+                job.getJobDataMap().put(TimeCounterPomodoro.TIME, User.POMODORO_TIME - time);
+                job.getJobDataMap().put(TimeCounterPomodoro.POMODORO, pomodoro);
                 scheduler.start();
                 scheduler.scheduleJob(job, trigger);
             } else {
@@ -41,16 +42,54 @@ public class TimerService {
             return false;
         }
     }
-
-    public boolean pauseTimerService(Pomodoro pomodoro) {
+ 
+    public boolean pausePomodoroCounter(Pomodoro pomodoro) {
         try {
             JobKey jobKey = new JobKey(pomodoro.getTaskName(), pomodoro.getUser().getEmail());
-            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
         return true;
     }
-
+    
+    public boolean startPauseCounter(User user, long time) {
+        try {
+            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+            JobKey jobKey = new JobKey(user.getName(), user.getEmail());
+            if (!scheduler.checkExists(jobKey)) {
+                JobDetail job = JobBuilder.newJob(TimeCounterPause.class)
+                        .withIdentity(user.getName(), user.getEmail()).build();
+                Trigger trigger = TriggerBuilder.newTrigger()
+                        .withIdentity(user.getName(), user.getEmail())
+                        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(User.UPDATE_INTERVAL)
+                                .repeatForever().withMisfireHandlingInstructionNextWithExistingCount())
+                        .build();
+                	job.getJobDataMap().put(TimeCounterPause.TIME, time);    
+                job.getJobDataMap().put(TimeCounterPause.USER, user);
+                scheduler.start();
+                scheduler.scheduleJob(job, trigger);
+            } else {
+                scheduler.resumeJob(jobKey);
+            }
+            return true;
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+ 
+    public boolean stopPauseCounter(User user) {
+        try {
+            JobKey jobKey = new JobKey(user.getName(), user.getEmail());
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
+            if (scheduler.getJobDetail(jobKey) != null) {
+                scheduler.deleteJob(jobKey);
+            }
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }

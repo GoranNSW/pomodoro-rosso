@@ -36,8 +36,13 @@ public class User {
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "userList", fetch = FetchType.EAGER)
     private Set<Team> teamList = new HashSet<>();
+    
+    @Transient
+    private boolean inPomodoro = false;
 
     public static final long POMODORO_TIME = 1500; // 1500seconds = 25minutes
+    public static final long LONG_PAUSE_TIME = 900; // 900seconds = 15minuutes
+    public static final long SHORT_PAUSE_TIME = 300; // 300seconds = 5minuutes
     public static final int UPDATE_INTERVAL = 1; // update interval of
                                                  // TimerService
 
@@ -143,7 +148,7 @@ public class User {
     }
 
     public boolean removePomodoro(Pomodoro pomodoro) {
-        if (this.getPomodoroList().contains(pomodoro)) {
+        if (this.getPomodoroList().contains(pomodoro) && !this.inPomodoro) {
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             this.getPomodoroList().remove(pomodoro);
@@ -153,7 +158,7 @@ public class User {
             logger.info("Pomodoro " + pomodoro.getTaskName() + " deleted.");
             return true;
         } else {
-            logger.warn("Pomodoro " + pomodoro.getTaskName() + " does not exist.");
+            logger.warn("Pomodoro " + pomodoro.getTaskName() + " does not exist or is locked.");
             return false;
         }
     }
@@ -162,8 +167,9 @@ public class User {
         long timeDifference;
 
         if (this.getPomodoroList().contains(pomodoro)) {
-            if (!pomodoro.getIsFinished()) {
+            if (!pomodoro.getIsFinished() && !this.inPomodoro) {
                 TimerService timerService = new TimerService();
+                timerService.stopPauseCounter(this);
                 if (pomodoro.getDateTimeStarted() == null) {
                     Session session = HibernateUtil.getSessionFactory().getCurrentSession();
                     session.beginTransaction();
@@ -172,17 +178,18 @@ public class User {
                     session.getTransaction().commit();
                     session.close();
                     timeDifference = 0;
-                    timerService.startTimerService(pomodoro, timeDifference);
+                    timerService.startPomodoroCounter(pomodoro, timeDifference);
                 } else {
                     timeDifference = getTimeDifference(pomodoro.getDateTimeStarted(), pomodoro.getDateTimePaused(),
                             TimeUnit.SECONDS);
-                    timerService.startTimerService(pomodoro, timeDifference);
+                    timerService.startPomodoroCounter(pomodoro, timeDifference);
                 }
                 logger.info("Pomodoro " + pomodoro.getTaskName() + " started.");
+                this.inPomodoro = true;
                 this.pomodoroNotifier.notifyUserStartedPomodoro(this);
                 return true;
             } else {
-                logger.warn("Pomodoro " + pomodoro.getTaskName() + " is already finished.");
+                logger.warn("Pomodoro " + pomodoro.getTaskName() + " can NOT be started.");
                 return false;
             }
         } else {
@@ -192,7 +199,7 @@ public class User {
     }
 
     public boolean pausePomodoro(Pomodoro pomodoro) {
-        if (this.getPomodoroList().contains(pomodoro) && pomodoro.getDateTimeStarted() != null) {
+        if (this.getPomodoroList().contains(pomodoro) && pomodoro.getDateTimeStarted() != null && this.inPomodoro) {
             if (!pomodoro.getIsFinished()) {
                 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
                 session.beginTransaction();
@@ -200,8 +207,9 @@ public class User {
                 session.saveOrUpdate(pomodoro);
                 session.getTransaction().commit();
                 session.close();
-                new TimerService().pauseTimerService(pomodoro);
+                new TimerService().pausePomodoroCounter(pomodoro);
                 logger.info("Pomodoro " + pomodoro.getTaskName() + " is paused.");
+                this.inPomodoro = false;
                 this.pomodoroNotifier.notifyUserPausedPomodoro(this);
                 return true;
             }
@@ -214,7 +222,7 @@ public class User {
     }
 
     public boolean resetPomodoro(Pomodoro pomodoro) {
-        if (this.getPomodoroList().contains(pomodoro)) {
+        if (this.getPomodoroList().contains(pomodoro) && !this.inPomodoro) {
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();
             pomodoro.setDateTimeStarted(null);
@@ -223,11 +231,12 @@ public class User {
             session.saveOrUpdate(pomodoro);
             session.getTransaction().commit();
             session.close();
+            this.inPomodoro = false;
             logger.info("Pomodoro " + pomodoro.getTaskName() + " is reset.");
             this.pomodoroNotifier.notifyUserResetPomodoro(this);
             return true;
         } else {
-            logger.warn("Pomodoro " + pomodoro.getTaskName() + " does not exist.");
+            logger.warn("Pomodoro " + pomodoro.getTaskName() + " does not exist or can NOT be reset.");
             return false;
         }
     }
@@ -245,11 +254,20 @@ public class User {
                 finishedCount++;
             }
         }
+        TimerService timerService = new TimerService();
         if ((finishedCount % 4) == 0) {
+        	timerService.startPauseCounter(pomodoro.getUser(), LONG_PAUSE_TIME);
             this.pomodoroNotifier.notifyUserLongBreak(this);
         } else {
+        	timerService.startPauseCounter(pomodoro.getUser(), SHORT_PAUSE_TIME);        	
             this.pomodoroNotifier.notifyUserShortBreak(this);
         }
+        this.inPomodoro = false;
+        return true;
+    }
+    
+    public boolean finishPause(User user) {
+    	this.pomodoroNotifier.notifyUserInactive(this);
         return true;
     }
 

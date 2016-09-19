@@ -6,7 +6,7 @@
 	<groupId>rs.goran.service</groupId>
 	<artifactId>webapp</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>WebApp</name>
+	<name>PomodoroRosso</name>
 	<description></description>
 	<repositories>
 		<repository>
@@ -17,18 +17,26 @@
 	</repositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<spring.version>4.3.2.RELEASE</spring.version>
+		<maven.source.plugin.version>3.0.1</maven.source.plugin.version>
+		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+		<maven.eclipse.plugin.version>2.9</maven.eclipse.plugin.version>
+		<build.helper.maven.plugin.version>1.5</build.helper.maven.plugin.version>
+		<hibernate.core.version>5.2.1.Final</hibernate.core.version>
+		<mysql.connector.version>6.0.3</mysql.connector.version>
+		<logf4j.version>1.7.12</logf4j.version>
 		<jetty.version>8.1.5.v20120716</jetty.version>
 		<jetty.jsp.version>8.1.4.v20120524</jetty.jsp.version>
-		<spring.version>3.1.2.RELEASE</spring.version>
-		<java.version>1.8</java.version>
-		<logf4j.version>1.7.12</logf4j.version>
+		<gitkitclient.version>1.2.7</gitkitclient.version>
+		<quartz.version>2.2.1</quartz.version>
 	</properties>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
+				<version>${maven.source.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -41,7 +49,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -49,7 +57,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
+				<version>${maven.eclipse.plugin.version}</version>
 				<configuration>
 					<downloadSources>true</downloadSources>
 				</configuration>
@@ -57,7 +65,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.5</version>
+				<version>${build.helper.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>add-resource</id>
@@ -129,7 +137,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>${logf4j.version}</version>
-		</dependency>	
+		</dependency>
 		<!-- SPRING DEPENDENCIES -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -162,41 +170,34 @@
 			<artifactId>jetty-servlets</artifactId>
 			<version>${jetty.version}</version>
 		</dependency>
-		<!-- JSP and JSTL SUPPORT -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp</artifactId>
 			<version>${jetty.jsp.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- HIBERNATE SUPPORT -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.2.1.Final</version>
+			<version>${hibernate.core.version}</version>
 		</dependency>
 		<!-- SQL SUPPORT -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>6.0.3</version>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 		<!-- GOOGLE OAUTH2.0 -->
 		<dependency>
 			<groupId>com.google.identitytoolkit</groupId>
 			<artifactId>gitkitclient</artifactId>
-			<version>1.2.7</version>
+			<version>${gitkitclient.version}</version>
 		</dependency>
 		<!-- QUARTZ SCHEDULER -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>2.2.1</version>
+			<version>${quartz.version}</version>
 		</dependency>
 	</dependencies>
 </project>

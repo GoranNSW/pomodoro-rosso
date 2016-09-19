@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import rs.goran.model.Team;
 import rs.goran.model.User;
@@ -18,15 +17,13 @@ public class PomodoroNotifier {
     }
 
     private Set<User> getUsersList(User user) {
-        Set<Team> teams = new HashSet<>();
         Set<User> users = new HashSet<>();
-        teams = user.getTeamList();
-        for (Team team : teams) {
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-            Team teamFromDB = session.get(Team.class, team.getName());
-            session.close();
-            users = teamFromDB.getUserList();
+        for (Team team : user.getTeamList()) {
+        	for (User userFromTeam : team.getUserList()){
+        		if (!users.contains(userFromTeam)) {
+        			users.add(userFromTeam);
+        		}
+        	}   
         }
         return users;
     }
@@ -54,6 +51,17 @@ public class PomodoroNotifier {
             }
         }
     }
+    
+    public void reportPomodoroTime(User user, long time) {
+        for (User notifyUser : getUsersList(user)) {
+            if (!user.getEmail().equals(notifyUser.getEmail())) {
+            	long sec = time % 60;
+            	long min = time / 60;
+            	String timeLeft = min + ":" + String.format("%02d", sec);
+                logger.info("Hey " + notifyUser.getName() + ", user " + user.getName() + " has " +  timeLeft  + " left in pomodoro.");
+            }
+        }
+    }
 
     public void notifyUserShortBreak(User user) {
         for (User notifyUser : getUsersList(user)) {
@@ -67,6 +75,26 @@ public class PomodoroNotifier {
         for (User notifyUser : getUsersList(user)) {
             if (!user.getEmail().equals(notifyUser.getEmail())) {
                 logger.info("Hey " + notifyUser.getName() + ", user " + user.getName() + " is on long break.");
+            }
+        }
+    }
+
+    
+    public void reportPauseTime(User user, long time) {
+        for (User notifyUser : getUsersList(user)) {
+            if (!user.getEmail().equals(notifyUser.getEmail())) {
+            	long sec = time % 60;
+            	long min = time / 60;
+            	String timeLeft = min + ":" + String.format("%02d", sec);
+                logger.info("Hey " + notifyUser.getName() + ", user " + user.getName() + " has " +  timeLeft  + " left on pause.");
+            }
+        }
+    }
+    
+    public void notifyUserInactive(User user) {
+        for (User notifyUser : getUsersList(user)) {
+            if (!user.getEmail().equals(notifyUser.getEmail())) {
+                logger.info("Hey " + notifyUser.getName() + ", user " + user.getName() + " is inactive.");
             }
         }
     }

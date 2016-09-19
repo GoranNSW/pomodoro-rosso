@@ -3,6 +3,9 @@ package rs.goran;
 import org.apache.log4j.Logger;
 import org.quartz.SchedulerException;
 
+import rs.goran.model.Pomodoro;
+import rs.goran.model.Team;
+import rs.goran.model.User;
 import rs.goran.service.WebServer;
 
 public class Main {
@@ -21,13 +24,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws SchedulerException {
-
+    	
         try {
             new Main().start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+        
         logger.info("End.");
 
     }
