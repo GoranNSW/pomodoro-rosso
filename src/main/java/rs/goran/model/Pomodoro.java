@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 @Entity
 public class Pomodoro {
 
-    final static Logger logger = Logger.getLogger(Pomodoro.class);
+    private static final Logger logger = Logger.getLogger(Pomodoro.class);
 
     @Id
     private String taskName;

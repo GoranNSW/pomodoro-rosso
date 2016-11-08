@@ -1,5 +1,6 @@
 package rs.goran.service;
 
+import org.apache.log4j.Logger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -15,72 +16,68 @@ import rs.goran.model.User;
 
 public class TimerService {
 
+    private static final Logger logger = Logger.getLogger(TimerService.class);
+
     Scheduler scheduler;
 
-    public boolean startPomodoroCounter(Pomodoro pomodoro, long time) {
+    public void startPomodoroCounter(Pomodoro pomodoro, long time) {
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             JobKey jobKey = new JobKey(pomodoro.getTaskName(), pomodoro.getUser().getEmail());
             if (!scheduler.checkExists(jobKey)) {
-                JobDetail job = JobBuilder.newJob(TimeCounterPomodoro.class)
+                JobDetail job = JobBuilder.newJob(TimeCounter.class)
                         .withIdentity(pomodoro.getTaskName(), pomodoro.getUser().getEmail()).build();
                 Trigger trigger = TriggerBuilder.newTrigger()
                         .withIdentity(pomodoro.getTaskName(), pomodoro.getUser().getEmail())
                         .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(User.UPDATE_INTERVAL)
                                 .repeatForever().withMisfireHandlingInstructionNextWithExistingCount())
                         .build();
-                job.getJobDataMap().put(TimeCounterPomodoro.TIME, User.POMODORO_TIME - time);
-                job.getJobDataMap().put(TimeCounterPomodoro.POMODORO, pomodoro);
+                job.getJobDataMap().put(TimeCounter.TIME, User.POMODORO_TIME - time);
+                job.getJobDataMap().put(TimeCounter.ENTITY, pomodoro);
                 scheduler.start();
                 scheduler.scheduleJob(job, trigger);
             } else {
                 scheduler.resumeJob(jobKey);
             }
-            return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
-            return false;
+            logger.error("Scheduler start pomodoro counter exception.");
         }
     }
- 
-    public boolean pausePomodoroCounter(Pomodoro pomodoro) {
+
+    public void pausePomodoroCounter(Pomodoro pomodoro) {
         try {
             JobKey jobKey = new JobKey(pomodoro.getTaskName(), pomodoro.getUser().getEmail());
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.error("Scheduler pause pomodoro counter exception.");
         }
-        return true;
     }
-    
-    public boolean startPauseCounter(User user, long time) {
+
+    public void startPauseCounter(User user, long time) {
         try {
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             JobKey jobKey = new JobKey(user.getName(), user.getEmail());
             if (!scheduler.checkExists(jobKey)) {
-                JobDetail job = JobBuilder.newJob(TimeCounterPause.class)
-                        .withIdentity(user.getName(), user.getEmail()).build();
-                Trigger trigger = TriggerBuilder.newTrigger()
-                        .withIdentity(user.getName(), user.getEmail())
+                JobDetail job = JobBuilder.newJob(TimeCounter.class).withIdentity(user.getName(), user.getEmail())
+                        .build();
+                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(user.getName(), user.getEmail())
                         .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(User.UPDATE_INTERVAL)
                                 .repeatForever().withMisfireHandlingInstructionNextWithExistingCount())
                         .build();
-                	job.getJobDataMap().put(TimeCounterPause.TIME, time);    
-                job.getJobDataMap().put(TimeCounterPause.USER, user);
+                job.getJobDataMap().put(TimeCounter.TIME, time);
+                job.getJobDataMap().put(TimeCounter.ENTITY, user);
                 scheduler.start();
                 scheduler.scheduleJob(job, trigger);
             } else {
                 scheduler.resumeJob(jobKey);
             }
-            return true;
         } catch (SchedulerException e) {
-            e.printStackTrace();
-            return false;
+            logger.error("Scheduler start pause counter exception.");
         }
     }
- 
-    public boolean stopPauseCounter(User user) {
+
+    public void stopPauseCounter(User user) {
         try {
             JobKey jobKey = new JobKey(user.getName(), user.getEmail());
             scheduler = StdSchedulerFactory.getDefaultScheduler();
@@ -88,8 +85,7 @@ public class TimerService {
                 scheduler.deleteJob(jobKey);
             }
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.error("Scheduler stop pause counter exception.");
         }
-        return true;
     }
 }

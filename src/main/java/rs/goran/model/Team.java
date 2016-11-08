@@ -17,14 +17,14 @@ import org.apache.log4j.Logger;
 @Entity
 public class Team {
 
-    final static Logger logger = Logger.getLogger(Team.class);
+    private static final Logger logger = Logger.getLogger(Team.class);
 
     @Id
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "team_name"), inverseJoinColumns = @JoinColumn(name = "user_email"))
-    private Set<User> userList = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     private String creator;
 
@@ -45,12 +45,12 @@ public class Team {
         this.name = name;
     }
 
-    public Set<User> getUserList() {
-        return userList;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setUserList(Set<User> users) {
-        this.userList = users;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public String getCreator() {
@@ -62,8 +62,8 @@ public class Team {
     }
 
     protected boolean addUser(User user) {
-        if (!this.getUserList().contains(user)) {
-            this.getUserList().add(user);
+        if (!this.users.contains(user)) {
+            this.users.add(user);
             logger.info("User " + user.getName() + " added.");
             return true;
         } else {
@@ -73,8 +73,8 @@ public class Team {
     }
 
     protected boolean removeUser(User user) {
-        if (this.getUserList().contains(user)) {
-            this.getUserList().remove(user);
+        if (this.users.contains(user)) {
+            this.users.remove(user);
             logger.info("User " + user.getName() + " deleted.");
             return true;
         } else {

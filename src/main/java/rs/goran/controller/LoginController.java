@@ -1,4 +1,4 @@
-package rs.goran.ui;
+package rs.goran.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,27 +10,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.google.identitytoolkit.GitkitClient;
 import com.google.identitytoolkit.GitkitClientException;
 import com.google.identitytoolkit.GitkitUser;
 
+import rs.goran.model.User;
+import rs.goran.service.interfaces.UserService;
+
 @Controller
-@SessionAttributes({ "email" })
+@SessionAttributes({ "id" })
 public class LoginController {
 
-    final static Logger logger = Logger.getLogger(LoginController.class);
-
-    private String username;
-    private String email;
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    private static final Logger logger = Logger.getLogger(LoginController.class);
+    
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String doGet(HttpServletRequest request, HttpServletResponse response, ModelMap model)
             throws ServletException, IOException {
         // This check prevents the "/" handler from handling all requests by
@@ -47,12 +48,12 @@ public class LoginController {
             gitkitUser = gitkitClient.validateTokenInRequest(request);
             String userInfo = null;
             if (gitkitUser != null) {
-                userInfo = "Welcome back!<br><br> Email: " + gitkitUser.getEmail() + "<br> Id: "
-                        + gitkitUser.getLocalId() + "<br> Provider: " + gitkitUser.getCurrentProvider();
-                email = gitkitUser.getEmail();
-                model.addAttribute("email", email);
-                logger.info("Gitkit " + userInfo);
-                return "loggedin";
+                userInfo = "Welcome back! Email: " + gitkitUser.getEmail() + " Provider: "
+                        + gitkitUser.getCurrentProvider();
+                model.addAttribute("id", gitkitUser.getLocalId());
+                logger.info("Gitkit ID:" + gitkitUser.getLocalId());
+                return "index";
+                // return "redirect:http://localhost:4200/home";
             }
 
         } catch (FileNotFoundException | GitkitClientException | JSONException e) {
@@ -72,33 +73,20 @@ public class LoginController {
         try {
             while ((line = request.getReader().readLine()) != null) {
                 builder.append(line);
+                logger.info("Reader" + line);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         String postBody = URLEncoder.encode(builder.toString(), "UTF-8");
-
+        logger.info("Return gitkit-widget" + builder.toString());
         return "gitkit-widget";
     }
 
     @RequestMapping(value = "/gitkit", method = RequestMethod.POST)
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
-    }
-
-    @RequestMapping(value = "/loggedin", method = RequestMethod.GET)
-    public String showLoggedIn(ModelMap model) {
-        model.addAttribute("username", this.username);
-        model.addAttribute("email", this.email);
-        logger.info(email);
-        return "loggedin";
-    }
-
-    @RequestMapping(value = "/loggedin", method = RequestMethod.POST)
-    public String handleUsernameInput(@RequestParam("username") String username, ModelMap model) {
-        this.username = username;
-        logger.info("POST " + username + " " + "Email: " + email);
-        return "redirect:/loggedin";
+        logger.info("Return doGet(request, response);");
     }
 
 }

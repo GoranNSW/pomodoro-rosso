@@ -3,15 +3,16 @@
 <head>
 <script type="text/javascript" src="//www.gstatic.com/authtoolkit/js/gitkit.js"></script>
 <link type="text/css" rel="stylesheet" href="//www.gstatic.com/authtoolkit/css/gitkit.css" />
+
 <script type="text/javascript">
 function load() {
   var config = {
-  "widgetUrl": "http://localhost:8000/gitkit",
-  "signInSuccessUrl": "/loggedin",
+  "widgetUrl": "http://localhost:8080/gitkit",
+  "signInSuccessUrl": "/",
   "signOutUrl": "/",
   "oobActionUrl": "/",
   "apiKey": "AIzaSyB3ry4tDLxM3UrRU4zDaX5pZBQn7lbwgPM",
-  "siteName": "this site",
+  "siteName": "Pomodoro site",
   "signInOptions": ["password","google"]
 };
   // The HTTP POST body should be escaped by the server to prevent XSS

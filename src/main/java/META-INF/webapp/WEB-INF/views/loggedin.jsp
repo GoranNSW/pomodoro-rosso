@@ -18,7 +18,7 @@
 <script type="text/javascript">
 var email = "${email}"
 if (email == null) {
-	alert("Email is null");
+    alert("Email is null");
 }
 </script>
 
@@ -31,38 +31,35 @@ if (email == null) {
 function myFunction() {    
     
     if ("${username}" != "") {
-    	document.getElementById("demo").innerHTML = "Hello ${username}";
-    	//alert("Hi ${username}");
-    	
+        document.getElementById("demo").innerHTML = "Hello ${username}";
+        //alert("Hi ${username}");
     } else {
-    	alert("You must enter username.");
+        alert("You must enter username.");
     }
 }
 </script>
 
 <script type="text/javascript">
 function IsEmpty(){
-	  if(document.forms['user_form'].question.value === "")
-	  {
-	    alert("Please enter usernamme");
-	    return false;
-	  }
-	    return true;
-	}
+    if(document.forms['user_form'].question.value === "") {
+        alert("Please enter usernamme");
+        return false;
+        }
+    return true;
+    }
 </script> 
     <p><font color="red">${errorMessage}</font></p>
     <form name="user_form" action="/loggedin" method="POST">
         Username : <input id="insert_username" onclick="return IsEmpty();" name="username" type="text" /> <input type="submit" value="Join"/>
     </form>
     
-<table>
-  <c:forEach items="${products}" var="product">
-    <tr>
-      <td><c:out value="${product.tareWeight}" /></td>
-      <td><c:out value="${product.barCode}" /></td>
-    </tr>
-  </c:forEach>
-</table>
+<button onclick="goBack()">Go Back</button>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>
 
 </body>
 </html>
